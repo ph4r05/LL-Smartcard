@@ -19,6 +19,12 @@
 	Contains some useful documents when working with smart cards that
 	define some of the APDUs and RIDs.
 
+# Pip install
+
+```
+pip install llsmartcard-ph4
+```
+
 # Install 
 
  * Install [pyDes](https://pypi.python.org/pypi/pyDes/) python library
