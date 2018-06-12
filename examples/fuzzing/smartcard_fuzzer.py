@@ -52,7 +52,7 @@ def insert_success(cla, ins, p1, p2, sw1, sw2):
                                                              hex(sw1),
                                                              hex(sw2)
                                                              )
-    print "Got Success: %s" % successful_apdu
+    print("Got Success: %s" % successful_apdu)
     
 
 def insert_trial(cla, ins, sw1, sw2):
@@ -170,7 +170,7 @@ def send_apdu(card, apdu_to_send):
         (data, sw1, sw2) = card._send_apdu(apdu_to_send)
         errorchain[0]([], sw1, sw2)
 
-    except SWException, e:
+    except SWException as e:
         # Did we get an unsuccessful attempt?
         logging.info(e)
     except:
@@ -188,7 +188,7 @@ def fuzzer(card, args=None):
         classes, recording the results
     """
     # First, determine all possible valid command classes
-    print "Enumerating valid classes..."
+    print("Enumerating valid classes...")
     for cla in range(0xFF + 1):
         # CLS INS P1 P2
         apdu_to_send = [cla, 0x00, 0x00, 0x00]
@@ -202,16 +202,16 @@ def fuzzer(card, args=None):
             valid_cla.append(cla)
 
     # Print our valid classes
-    print "Found %d valid command classes: " % len(valid_cla),
+    print("Found %d valid command classes: " % len(valid_cla))
     for cla in valid_cla:
-        print "%s" % hex(cla),
-    print ""
+        print("%s" % hex(cla))
+    print("")
 
     # Try our best not to lock up the card
     BAD_INSTRUCTIONS = [APDU.APDU_CMD.VERIFY, APDU.APDU_CMD.CHANGE_REF_DATA]
 
     # Next, try all possible instruction values for each valid command class
-    print "Brute forcing every command for each class..."
+    print("Brute forcing every command for each class...")
     for cla in range(0xFF + 1):
         for ins in range(0xFF + 1):
             if ins in BAD_INSTRUCTIONS:
@@ -276,15 +276,15 @@ def fuzzer(card, args=None):
             # Add response to hash tables
             insert_trial(cla, ins, sw1, sw2)
 
-    print "Found %d valid instructions." % len(valid_ins)
+    print("Found %d valid instructions." % len(valid_ins))
 
-    print "Saving results..."
+    print("Saving results...")
 
     print_cla_sw_ins("cla_sw_ins.tsv")
     print_sw_ins_cla("sw_ins_cla.tsv")
     print_success("successes.txt")
 
-    print "Done."
+    print("Done.")
 
 
 
@@ -294,10 +294,10 @@ if __name__ == "__main__":
     
     # Let the user the select a reader
     if len(reader_list) > 1:
-        print "Please select a reader"
+        print("Please select a reader")
         idx = 0
         for r in reader_list:
-            print "  %d - %s"%(idx,r)
+            print("  %d - %s"%(idx,r))
             idx += 1
             
         reader_idx = -1
@@ -308,7 +308,7 @@ if __name__ == "__main__":
     else:
         reader = reader_list[0]
     
-    print "Using: %s" % reader
+    print("Using: %s" % reader)
     
     # create connection
     connection = reader.createConnection()

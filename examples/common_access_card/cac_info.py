@@ -25,7 +25,7 @@ def process_card(connection, options):
     PIN = None #[0x37, 0x37, 0x37, 0x37, 0x37, 0x37, 0x37, 0x37]
     
     # Print NIST PIV Objects
-    print "Printing NIST PIV Objects..."
+    print("Printing NIST PIV Objects...")
     card.print_object(APDU.APPLET.NIST_PIV,
                       APDU.OBJ_NIST_PIV.CHUID)
     card.print_object(APDU.APPLET.NIST_PIV,
@@ -40,7 +40,7 @@ def process_card(connection, options):
                       APDU.OBJ_NIST_PIV.SEC_OBJ)
 
     # Print DOD PIV Object
-    print "Printing DoD PIV Objects..."
+    print("Printing DoD PIV Objects...")
     card.print_object(APDU.APPLET.DOD_PIV,
                       APDU.OBJ_DOD_PIV.CCC)
 
@@ -51,7 +51,7 @@ def process_card(connection, options):
                       APDU.OBJ_DOD_PIV.CHUID)
 
     # Print DOD CAC Objects
-    print "Printing DoD CAC Objects..."
+    print("Printing DoD CAC Objects...")
     card.print_object(APDU.APPLET.DOD_CAC,
                       APDU.OBJ_DOD_CAC.KEY_PKI_ENC)
     card.print_object(APDU.APPLET.DOD_CAC,
@@ -62,7 +62,7 @@ def process_card(connection, options):
 
     # Do we have a PIN to access authenticated information?
     if PIN is not None:
-        print "Printing NIST PIV Objects... (PIN PROTECTED)"
+        print("Printing NIST PIV Objects... (PIN PROTECTED)")
         card.print_object(APDU.APPLET.NIST_PIV,
                           APDU.OBJ_NIST_PIV.KEY_CRD_ATH,
                           pin=PIN)
@@ -76,7 +76,7 @@ def process_card(connection, options):
                           APDU.OBJ_NIST_PIV.FNGR_P2,
                           pin=PIN)
         
-        print "Printing DoD PIV Objects... (PIN PROTECTED)"
+        print("Printing DoD PIV Objects... (PIN PROTECTED)")
         card.print_object(APDU.APPLET.DOD_PIV,
                           APDU.OBJ_DOD_PIV.SEC_OBJ,
                           pix=APDU.PIX_CAC.PIV_TRNS_APLT,
@@ -86,7 +86,7 @@ def process_card(connection, options):
                           pix=APDU.PIX_CAC.PIV_TRNS_APLT,
                           pin=PIN)
         
-        print "Printing DoD CAC Objects... (PIN PROTECTED)"
+        print("Printing DoD CAC Objects... (PIN PROTECTED)")
         card.print_object(APDU.APPLET.DOD_CAC,
                           APDU.OBJ_DOD_CAC.CAC_PERSON,
                           pin=PIN)

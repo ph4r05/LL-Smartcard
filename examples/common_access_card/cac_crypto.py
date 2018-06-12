@@ -158,9 +158,9 @@ def main(args=None):
     # List our readers
     reader_list = readers()
     if options.listreaders:
-        print "Available readers: "
+        print("Available readers: ")
         for i in range(len(reader_list)):
-            print "  %d: %s" % (i, reader_list[i])
+            print("  %d: %s" % (i, reader_list[i]))
         return
 
     # Set our logging level
@@ -171,7 +171,7 @@ def main(args=None):
     for i in range(len(reader_list)):
         if options.reader == i or options.reader < 0:
             try:
-                print "Using: %s" % reader_list[i]
+                print("Using: %s" % reader_list[i])
 
                 connection = reader_list[i].createConnection()
                 connection.connect()
@@ -192,15 +192,15 @@ def main(args=None):
                 if options.encrypt:
                     # Check params
                     if options.input is None:
-                        print "ERROR: No input file given."
+                        print("ERROR: No input file given.")
                         opts.print_usage()
                         sys.exit()
                     if options.pubkey is None:
-                        print "ERROR: No public key file given."
+                        print("ERROR: No public key file given.")
                         opts.print_usage()
                         sys.exit()
                     if options.output is None:
-                        print "ERROR: No output file given."
+                        print("ERROR: No output file given.")
                         opts.print_usage()
                         sys.exit()
 
@@ -211,30 +211,30 @@ def main(args=None):
                           "-inkey", options.pubkey,
                           "-out", options.output])
 
-                    print "Encrypted %s using %s -> %s." % (options.input,
+                    print("Encrypted %s using %s -> %s." % (options.input,
                                                          options.pubkey,
-                                                         options.output)
+                                                         options.output))
 
                 if options.decrypt or options.sign:
                     # Check params
                     if options.input is None:
-                        print "ERROR: No input file given."
+                        print("ERROR: No input file given.")
                         opts.print_usage()
                         sys.exit()
                     if options.cert is None:
-                        print "ERROR: No CAC certificate selected."
+                        print("ERROR: No CAC certificate selected.")
                         opts.print_usage()
                         sys.exit()
                     if options.output is None:
-                        print "ERROR: No output file given."
+                        print("ERROR: No output file given.")
                         opts.print_usage()
                         sys.exit()
                     if options.cert not in CAC_KEYS:
-                        print "ERROR: not valid key selected."
+                        print("ERROR: not valid key selected.")
                         opts.print_usage()
                         sys.exit()
                     if options.pin is None or len(PIN) < 4:
-                        print "ERROR: No PIN given to authenticate to card."
+                        print("ERROR: No PIN given to authenticate to card.")
                         opts.print_usage()
                         sys.exit()
 
@@ -258,15 +258,15 @@ def main(args=None):
 
                     HELPER.write_binary(data, options.output)
 
-                    print "Decrypted %s -> %s." % (options.input, options.output)
+                    print("Decrypted %s -> %s." % (options.input, options.output))
 
                     for i in range(len(data)):
                         if data[i] == 0x00 and i != 0:
-                            print "ASCII: %s" % APDU.get_str(data[i:-1])
+                            print("ASCII: %s" % APDU.get_str(data[i:-1]))
 
 
             except smartcard.Exceptions.CardConnectionException as ex:
-                print "ERROR: Couldn't connect to card in %s" % reader_list[i]
+                print("ERROR: Couldn't connect to card in %s" % reader_list[i])
 
 
 if __name__ == "__main__":

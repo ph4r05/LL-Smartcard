@@ -36,9 +36,9 @@ def command_line(opts, callback, args=None):
         logger.error("No readers found.")
             
     if options.listreaders:
-        print "Available readers: "
+        print("Available readers: ")
         for i in range(len(reader_list)):
-            print "  %d: %s" % (i, reader_list[i])
+            print("  %d: %s" % (i, reader_list[i]))
         return
 
     # Walk over all readers
@@ -46,7 +46,7 @@ def command_line(opts, callback, args=None):
         if options.reader == i or options.reader < 0:
             try:
                 # Connect to Reader
-                print "Using: %s" % reader_list[i]
+                print("Using: %s" % reader_list[i])
                 connection = reader_list[i].createConnection()
                 connection.connect()
                 # process card in reader
@@ -54,6 +54,6 @@ def command_line(opts, callback, args=None):
                 break
 
             except smartcard.Exceptions.CardConnectionException:
-                print "ERROR: Couldn't connect to card in %s" % reader_list[i]
+                print("ERROR: Couldn't connect to card in %s" % reader_list[i])
                 sys.exit(0)
 

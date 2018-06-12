@@ -96,14 +96,14 @@ def main(args=None):
     if options.cardtype in CARD_TYPES:
         card_type = CARD_TYPES[options.cardtype]
     else:
-        print "Card type not recognized."
+        print("Card type not recognized.")
         card_type = CARD_TYPE.CAC
 
     reader_list = readers()
     if options.listreaders:
-        print "Available readers: "
+        print("Available readers: ")
         for i in range(len(reader_list)):
-            print "  %d: %s" % (i, reader_list[i])
+            print("  %d: %s" % (i, reader_list[i]))
         return
 
     log_level = logging.ERROR
@@ -114,7 +114,7 @@ def main(args=None):
     for i in range(len(reader_list)):
         if options.reader == i or options.reader < 0:
             try:
-                print "Using: %s" % reader_list[i]
+                print("Using: %s" % reader_list[i])
 
                 connection = reader_list[i].createConnection()
                 connection.connect()
@@ -132,9 +132,9 @@ def main(args=None):
                             data, sw1, sw2 = card.apdu_get_data([p1, p2])
 
                             if (sw1, sw2) != APDU.STATUS_WORDS.NOT_FOUND and (sw1, sw2) != APDU.STATUS_WORDS.COND_NOT_SATISFIED:
-                                print "(%s,%s) %s %s: %s" % (hex(sw1), hex(sw2),
+                                print("(%s,%s) %s %s: %s" % (hex(sw1), hex(sw2),
                                                              hex(p1), hex(p2),
-                                                   APDU.get_hex(data))
+                                                             APDU.get_hex(data)))
 
                 if card_type == CARD_TYPE.VISA:
                     card = VisaCard(connection, log_level=log_level)
@@ -145,7 +145,7 @@ def main(args=None):
                     card = SmartCard(connection, log_level=log_level)
                     card.apdu_select_application(APDU.APPLET.HELLO)
                     data, sw1, sw2 = card.apdu_read_record(0x00, 0x00)
-                    print "Data: %s" % APDU.get_str(data)
+                    print("Data: %s" % APDU.get_str(data))
 
                 if card_type == CARD_TYPE.CAC:
                     card = CAC(connection, log_level=log_level)
@@ -156,7 +156,7 @@ def main(args=None):
                                           APDU.OBJ_NIST_PIV.CCC)
 
                     if options.savecerts is not None:
-                        print "Dumping Certs"
+                        print("Dumping Certs")
 
                         import os
                         import struct
@@ -307,9 +307,9 @@ def main(args=None):
 
                     sign_data = read_binary("input.ssl")
 
-                    print sign_data
+                    print(sign_data)
 
-                    print "Signing: %s" % APDU.get_hex(sign_data)
+                    print("Signing: %s" % APDU.get_hex(sign_data))
                     data, sw1, sw2 = card.apdu_sign_decrypt(sign_data)
 
                     write_binary(data, "data.enc")
@@ -317,13 +317,13 @@ def main(args=None):
 
 
 
-                    print "Signed: %s" % APDU.get_hex(data)
+                    print("Signed: %s" % APDU.get_hex(data))
 
 #                    card.apdu_select_object(APDU.OBJ_DOD_CAC.KEY_PKI_SIG)
 #
 #                    data, sw1, sw2 = card.apdu_sign_decrypt(data)
 #
-#                    print "Decrypted: %s" % APDU.get_hex(data)
+#                    print("Decrypted: %s" % APDU.get_hex(data))
 
 
 #                    card.read_x509_piv(card.X509.PIV_ATH)
@@ -343,7 +343,7 @@ def main(args=None):
 #                    card.apdu_select_object(APDU.OBJ_DOD_PIV.SEC_OBJ)
 #
                     if False:
-                        print "Printing NIST PIV Objects..."
+                        print("Printing NIST PIV Objects...")
 
                         # Print NIST PIV Objects
                         card.print_object(APPLET.NIST_PIV,
@@ -369,7 +369,7 @@ def main(args=None):
                         card.print_object(APPLET.NIST_PIV,
                                           APDU.OBJ_NIST_PIV.FNGR_P2)
 
-                        print "Printing DoD PIV Objects..."
+                        print("Printing DoD PIV Objects...")
 
                         # Print DOD PIV Object
                         card.print_object(APPLET.DOD_PIV,
@@ -388,7 +388,7 @@ def main(args=None):
                         card.print_object(APPLET.DOD_PIV,
                                           APDU.OBJ_DOD_PIV.CHUID)
 
-                        print "Printing DoD CAC Objects..."
+                        print("Printing DoD CAC Objects...")
 
                         # Print DOD CAC Objects
                         card.print_object(APDU.APPLET.DOD_CAC,
@@ -414,8 +414,8 @@ def main(args=None):
                     card.apdu_select_application(APDU.APPLET.DOD_PIV, APDU.OBJ_DOD_PIV.CHUID)
                     tv_list = card.read_tl_v_buffer(0x0000)
                     for tv in tv_list:
-                        print hex(tv[0])
-                        print APDU.get_hex(tv[1])
+                        print(hex(tv[0]))
+                        print(APDU.get_hex(tv[1]))
 #                    data, sw1, sw2 = card.apdu_read_buffer(0x00, 0x00, 01, read_length=20)
 #                    data, sw1, sw2 = card.apdu_verify_pin([0x37, 0x37, 0x37, 0x37, 0x37, 0x37, 0x37, 0x37], p2=0x01)
 #                    card.select_object([0xa0, 01])
@@ -478,7 +478,7 @@ def main(args=None):
 #            card.apdu_select_application(APPLET.CSG_CCC) #, p1=0x02, p2=0x00)
 #            data, sw1, sw2 = card.read_buffer(0, 0, 0x01)
 #
-#            print "Length: %d" % data[0]
+#            print("Length: %d" % data[0])
 #            card.read_buffer(0, 2, 0x01, read_length=data[0])
 
 #            card.apdu_select_application(APDU.APPLET.CSG_CCC)
@@ -523,7 +523,7 @@ def main(args=None):
 #                visa.read_visa()
 
             except smartcard.Exceptions.CardConnectionException as ex:
-                print "ERROR: Couldn't connect to card in %s" % reader_list[i]
+                print("ERROR: Couldn't connect to card in %s" % reader_list[i])
 #                raise
 
 

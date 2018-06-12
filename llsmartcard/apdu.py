@@ -25,8 +25,8 @@ class SECURE_CHANNEL:
         VISA2 = 0x00
     class MODE:
         NONE = 0x00
-        MAC = 0X01
-        MAC_ENC = 03
+        MAC = 0x01
+        MAC_ENC = 0x03
 
 
 class SET_STATUS_PARAM:

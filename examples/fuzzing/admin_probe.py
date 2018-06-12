@@ -21,16 +21,17 @@ def process_card(connection, options):
     # Open card
     card = CAC(connection)
 
-    print "Trying some interesting APDUs"
-    
+    print("Trying some interesting APDUs")
+
     for i in range(0xff+1):
         for j in range(0xff+1):
             apdu_data = APDU.READ_BINARY(i, j, CLA=PROBE_CLA)
             data, sw1, sw2  = card._send_apdu(apdu_data)
             if sw1 == 0x90:
-                print "Success at %x %x"%(i,j)
-                print data
-    
+                print("Success at %x %x" % (i, j))
+                print(data)
+
+
 #     apdu_data = APDU.GET_DATA(0x00, 0x01, CLA=0xFF)
 #     card._send_apdu(apdu_data)
 if __name__ == "__main__":

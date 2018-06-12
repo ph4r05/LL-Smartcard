@@ -16,7 +16,7 @@ from smartcard.sw.SWExceptions import SWException
 import pyDes
 
 # LL Smartcard
-import apdu as APDU
+from llsmartcard import apdu as APDU
 
 class SmartCard:
 
@@ -46,7 +46,7 @@ class SmartCard:
         # See if our status word was an error
         try:
             self.errorchain[0]([], sw1, sw2)
-        except SWException, e:
+        except SWException as e:
             # Did we get an unsuccessful attempt?
             logger.debug(e)
 
@@ -107,7 +107,7 @@ class SmartCard:
             return
 
         if apdu_data[0] != 0x84:
-            logger.warn("Class is not 0x84 in secure message.")
+            logger.warning("Class is not 0x84 in secure message.")
             apdu_data[0] = 0x84
 
 
@@ -147,7 +147,7 @@ class SmartCard:
         """ Print Error """
         # @todo: Figure out the SW1 SW2 meaning
 
-        print "ERROR (%s,%s): %s" % (hex(sw1), hex(sw2), error)
+        print("ERROR (%s,%s): %s" % (hex(sw1), hex(sw2), error))
 
 
     def _generate_random(self, length):
@@ -223,17 +223,17 @@ class SmartCard:
             value = input_data[offset + 2:offset + 2 + length]
 
             if t == 0x4f:
-                print "AID: %s" % APDU.get_hex(value)
+                print("AID: %s" % APDU.get_hex(value))
             elif t == 0x9f70:
-                print "  Life Cycle State: %08s" % '{0:08b}'.format(value[0])
+                print("  Life Cycle State: %08s" % '{0:08b}'.format(value[0]))
             elif t == 0xc5:
-                print "  Application Privleges: %s %s" % (APDU.get_hex(value),
-                                                        self._str_privs(value[0]))
+                print("  Application Privleges: %s %s" % (APDU.get_hex(value),
+                                                        self._str_privs(value[0])))
             elif t == 0x84:
-                print "  Executable Module ID: %s" % (APDU.get_hex(value))
+                print("  Executable Module ID: %s" % (APDU.get_hex(value)))
             else:
-                print "  UNKNOWN: t:%s, l:%s, v:%s" % (hex(t), hex(length),
-                                                     APDU.get_hex(value))
+                print("  UNKNOWN: t:%s, l:%s, v:%s" % (hex(t), hex(length),
+                                                     APDU.get_hex(value)))
 
             offset += length + 2
 
@@ -250,7 +250,7 @@ class SmartCard:
         data, sw1, sw2 = self._send_apdu(apdu_select)
 
         if sw1 != APDU.APDU_STATUS.SUCCESS:
-            print "ERROR (%s,%s): SELECT failed." % (hex(sw1), hex(sw2))
+            print("ERROR (%s,%s): SELECT failed." % (hex(sw1), hex(sw2)))
 
         return (data, sw1, sw2)
 
@@ -267,7 +267,7 @@ class SmartCard:
         data, sw1, sw2 = self._send_apdu(apdu_select)
 
         if sw1 != APDU.APDU_STATUS.SUCCESS:
-            print "ERROR (%s,%s): SELECT failed." % (hex(sw1), hex(sw2))
+            print("ERROR (%s,%s): SELECT failed." % (hex(sw1), hex(sw2)))
 
         return (data, sw1, sw2)
 
@@ -285,7 +285,7 @@ class SmartCard:
         data, sw1, sw2 = self._send_apdu(apdu_select)
 
         if sw1 != APDU.APDU_STATUS.SUCCESS:
-            print "ERROR (%s,%s): SELECT failed." % (hex(sw1), hex(sw2))
+            print("ERROR (%s,%s): SELECT failed." % (hex(sw1), hex(sw2)))
 
         return (data, sw1, sw2)
 
@@ -303,7 +303,7 @@ class SmartCard:
         data, sw1, sw2 = self._send_apdu(apdu_select)
 
         if sw1 != APDU.APDU_STATUS.SUCCESS:
-            print "ERROR (%s,%s): SELECT failed." % (hex(sw1), hex(sw2))
+            print("ERROR (%s,%s): SELECT failed." % (hex(sw1), hex(sw2)))
 
         return (data, sw1, sw2)
 
@@ -322,7 +322,7 @@ class SmartCard:
         data, sw1, sw2 = self._send_apdu(apdu_select)
 
         if sw1 != APDU.APDU_STATUS.SUCCESS:
-            print "ERROR (%s,%s): SELECT failed." % (hex(sw1), hex(sw2))
+            print("ERROR (%s,%s): SELECT failed." % (hex(sw1), hex(sw2)))
 
         return (data, sw1, sw2)
 
@@ -705,11 +705,11 @@ class SmartCard:
         data, sw1, sw2 = self._send_apdu(apdu)
 
         if sw1 != APDU.APDU_STATUS.SUCCESS:
-            print "ERROR (%s,%s): VERIFY PIN failed." % (hex(sw1), hex(sw2))
+            print("ERROR (%s,%s): VERIFY PIN failed." % (hex(sw1), hex(sw2)))
             if sw1 == 0x63 and sw2 & 0xc0 == 0xc0:
-                print "WARNING: %d tries remaining!" % (sw2 & 0x0F)
+                print("WARNING: %d tries remaining!" % (sw2 & 0x0F))
         else:
-            print "* Key Authentication Successful!"
+            print("* Key Authentication Successful!")
         return (data, sw1, sw2)
 
 
@@ -783,11 +783,11 @@ class SmartCard:
         data, sw1, sw2 = self._send_apdu(apdu)
 
         if sw1 != APDU.APDU_STATUS.SUCCESS:
-            print "ERROR (%s,%s): VERIFY PIN failed." % (hex(sw1), hex(sw2))
+            print("ERROR (%s,%s): VERIFY PIN failed." % (hex(sw1), hex(sw2)))
             if sw1 == 0x63 and sw2 & 0xc0 == 0xc0:
-                print "WARNING: %d tries remaining!" % (sw2 & 0x0F)
+                print("WARNING: %d tries remaining!" % (sw2 & 0x0F))
         else:
-            print "* PIN retry has been reset."
+            print("* PIN retry has been reset.")
         return (data, sw1, sw2)
 
 
@@ -808,9 +808,9 @@ class SmartCard:
                 logger.debug("REC %d SFI %d" % (rec, (sfi << 3) | 4))
                 data, sw1, sw2 = self.apdu_read_record(rec, (sfi << 3) | 4)
                 if sw1 == APDU.APDU_STATUS.SUCCESS:
-                    print "REC %d SFI %d" % (rec, (sfi << 3) | 4)
-                    print "Hex: %s" % APDU.get_hex(data)
-                    print "Str: %s" % APDU.get_str(data)
+                    print("REC %d SFI %d" % (rec, (sfi << 3) | 4))
+                    print("Hex: %s" % APDU.get_hex(data))
+                    print("Str: %s" % APDU.get_str(data))
                     
     
     def _decode_bcd(self, bcd_num):
@@ -1069,7 +1069,7 @@ class CAC(SmartCard):
 
     def _splash(self, string):
         """ Used to keep output pretty """
-        print "--------------------- %s ---------------------" % string
+        print("--------------------- %s ---------------------" % string)
 
 
     def _print_fasc_n(self, data):
@@ -1103,16 +1103,16 @@ class CAC(SmartCard):
         poa = fasc_n_list[37]
 
         # print in nice format
-        print "  FASC-N (SEIWG-012): %s" % hex(fasc_n)
-        print "   Agency Code: %s / %s" % (agency_code, self._lookup_agency(agency_code))
-        print "   System Code: %s" % system_code
-        print "   Credential Number: %s" % credential_number
-        print "   Credential Series: %s" % cs
-        print "   Individual Credential Issue: %s" % ici
-        print "   Person Identifier: %s" % pi
-        print "   Organizational Category: %s / %s" % (oc, self._lookup_oc(oc))
-        print "   Organizational Identifier: %s / %s" % (oi, self._lookup_agency(oi))
-        print "   Person Association Category: %s / %s" % (poa, self._lookup_poa(poa))
+        print("  FASC-N (SEIWG-012): %s" % hex(fasc_n))
+        print("   Agency Code: %s / %s" % (agency_code, self._lookup_agency(agency_code)))
+        print("   System Code: %s" % system_code)
+        print("   Credential Number: %s" % credential_number)
+        print("   Credential Series: %s" % cs)
+        print("   Individual Credential Issue: %s" % ici)
+        print("   Person Identifier: %s" % pi)
+        print("   Organizational Category: %s / %s" % (oc, self._lookup_oc(oc)))
+        print("   Organizational Identifier: %s / %s" % (oi, self._lookup_agency(oi)))
+        print("   Person Association Category: %s / %s" % (poa, self._lookup_poa(poa)))
 
 
     def _print_ccc(self, tv_data, applet=None, object_id=None):
@@ -1132,52 +1132,52 @@ class CAC(SmartCard):
             tlv_type = tv[0]
             tlv_value = tv[1]
             if tlv_type == 0xf0:
-                print "   Card Identifier [%s]" % APDU.get_hex(tlv_value)
-                print "    GSC-RID: %s" % APDU.get_hex(tlv_value[0:5])
-                print "    Manufacturer ID: %s" % hex(tlv_value[5])
-                print "    Card Type: %s" % self._lookup_card_type(tlv_value[6])
-                print "    Card ID: %s | %s" % (APDU.get_hex(tlv_value[7:17]),
-                                                APDU.get_hex(tlv_value[17:22]))
+                print("   Card Identifier [%s]" % APDU.get_hex(tlv_value))
+                print("    GSC-RID: %s" % APDU.get_hex(tlv_value[0:5]))
+                print("    Manufacturer ID: %s" % hex(tlv_value[5]))
+                print("    Card Type: %s" % self._lookup_card_type(tlv_value[6]))
+                print("    Card ID: %s | %s" % (APDU.get_hex(tlv_value[7:17]),
+                                                APDU.get_hex(tlv_value[17:22])))
             elif tlv_type == 0xf1:
-                print "   Capability Container version number: %s" % APDU.get_hex(tlv_value)
+                print("   Capability Container version number: %s" % APDU.get_hex(tlv_value))
             elif tlv_type == 0xf2:
-                print "   Capability Grammar version number: %s" % APDU.get_hex(tlv_value)
+                print("   Capability Grammar version number: %s" % APDU.get_hex(tlv_value))
             elif tlv_type == 0xf3:
-                print "   Applications CardURL [%s]" % APDU.get_hex(tlv_value)
-                print "     RID: %s" % APDU.get_hex(tlv_value[0:5])
-                print "     Application Type: %s" % self._lookup_card_app_type(tlv_value[5])
-                print "     Object ID: %s" % self._lookup_card_object_id(tlv_value[6:8])
-                print "     Application ID: %s" % APDU.get_hex(tlv_value[8:10])
-                print "     AccProfile: %s" % hex(tlv_value[10])
-                print "     PIN ID: %s" % hex(tlv_value[11])
-                print "     AccKey Info: %s" % APDU.get_hex(tlv_value[12:16])
-                print "     -- Alternate ---"
-                print "      PIN ID: %s" % hex(tlv_value[8])
-                print "       Key File ID: %s" % APDU.get_hex(tlv_value[9:11])
-                print "       Key Number: %s" % hex(tlv_value[11])
-                print "       Key Algorithm: %s" % self._lookup_key_crypto(tlv_value[12])
-                print "      Key Algorithm: %s" % self._lookup_key_crypto(tlv_value[13])
+                print("   Applications CardURL [%s]" % APDU.get_hex(tlv_value))
+                print("     RID: %s" % APDU.get_hex(tlv_value[0:5]))
+                print("     Application Type: %s" % self._lookup_card_app_type(tlv_value[5]))
+                print("     Object ID: %s" % self._lookup_card_object_id(tlv_value[6:8]))
+                print("     Application ID: %s" % APDU.get_hex(tlv_value[8:10]))
+                print("     AccProfile: %s" % hex(tlv_value[10]))
+                print("     PIN ID: %s" % hex(tlv_value[11]))
+                print("     AccKey Info: %s" % APDU.get_hex(tlv_value[12:16]))
+                print("     -- Alternate ---")
+                print("      PIN ID: %s" % hex(tlv_value[8]))
+                print("       Key File ID: %s" % APDU.get_hex(tlv_value[9:11]))
+                print("       Key Number: %s" % hex(tlv_value[11]))
+                print("       Key Algorithm: %s" % self._lookup_key_crypto(tlv_value[12]))
+                print("      Key Algorithm: %s" % self._lookup_key_crypto(tlv_value[13]))
 
             elif tlv_type == 0xf4:
-                print "   PKCS#15: %s" % APDU.get_hex(tlv_value)
+                print("   PKCS#15: %s" % APDU.get_hex(tlv_value))
             elif tlv_type == 0xf5:
-                print "   Registered Data Model number: %s" % APDU.get_hex(tlv_value)
+                print("   Registered Data Model number: %s" % APDU.get_hex(tlv_value))
             elif tlv_type == 0xf6:
-                print "   Access Control Rule Table: %s" % APDU.get_hex(tlv_value)
+                print("   Access Control Rule Table: %s" % APDU.get_hex(tlv_value))
             elif tlv_type == 0xf7:
-                print "   CARD APDUs: %s" % APDU.get_hex(tlv_value)
+                print("   CARD APDUs: %s" % APDU.get_hex(tlv_value))
             elif tlv_type == 0xfa:
-                print "   Redirection Tag: %s" % APDU.get_hex(tlv_value)
+                print("   Redirection Tag: %s" % APDU.get_hex(tlv_value))
             elif tlv_type == 0xfb:
-                print "   Capability Tuples (CTs): %s" % APDU.get_hex(tlv_value)
+                print("   Capability Tuples (CTs): %s" % APDU.get_hex(tlv_value))
             elif tlv_type == 0xfc:
-                print "   Status Tuples (STs): %s" % APDU.get_hex(tlv_value)
+                print("   Status Tuples (STs): %s" % APDU.get_hex(tlv_value))
             elif tlv_type == 0xfd:
-                print "   Next CCC: %s" % APDU.get_hex(tlv_value)
+                print("   Next CCC: %s" % APDU.get_hex(tlv_value))
             elif tlv_type == 0xfe:
-                print "   Error Detection Code: %s" % APDU.get_hex(tlv_value)
+                print("   Error Detection Code: %s" % APDU.get_hex(tlv_value))
             else:
-                print "  [TLV] Type: %s, Length: %d  " % (hex(tlv_type), len(tlv_value))
+                print("  [TLV] Type: %s, Length: %d  " % (hex(tlv_type), len(tlv_value)))
 
         self._splash("CCC (%s)" % APDU.get_hex(applet))
 
@@ -1201,20 +1201,20 @@ class CAC(SmartCard):
 
             if tlv_type == 0x30:
                 self._print_fasc_n(tlv_value)
-                print ""
+                print("")
             elif tlv_type == 0x31:
-                print "  Agency Code: %s" % APDU.get_hex(tlv_value)
+                print("  Agency Code: %s" % APDU.get_hex(tlv_value))
             elif tlv_type == 0x34:
-                print "  GUID: %s" % APDU.get_hex(tlv_value)
+                print("  GUID: %s" % APDU.get_hex(tlv_value))
             elif tlv_type == 0x35:
-                print "  Expiration Date (YYYYMMDD): %s" % APDU.get_str(tlv_value)
+                print("  Expiration Date (YYYYMMDD): %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x3E:
-                print "  Asymmetric Signature: [length: %d]" % len(tlv_value)
+                print("  Asymmetric Signature: [length: %d]" % len(tlv_value))
             elif tlv_type == 0xFE:
-                print "Error Detection Code Found."
+                print("Error Detection Code Found.")
             else:
-                print "  [TLV] Type: %s, Length: %d  " % (hex(tlv_type),
-                                                            len(tlv_value))
+                print("  [TLV] Type: %s, Length: %d  " % (hex(tlv_type),
+                                                            len(tlv_value)))
 
         self._splash("CHUID (%s)" % APDU.get_hex(applet))
 
@@ -1245,17 +1245,17 @@ class CAC(SmartCard):
             tlv_value = tv[1]
 
             if tlv_type == 0x70:
-                print "Certificate: [length: %d]" % len(tlv_value)
+                print("Certificate: [length: %d]" % len(tlv_value))
             elif tlv_type == 0x71:
-                print "Certificate Info: %s" % APDU.get_hex(tlv_value)
+                print("Certificate Info: %s" % APDU.get_hex(tlv_value))
             elif tlv_type == 0x72:
-                print "MSCUID: %s" % APDU.get_hex(tlv_value)
+                print("MSCUID: %s" % APDU.get_hex(tlv_value))
             elif tlv_type == 0xFE:
-                print "Error Detction Code Found."
+                print("Error Detction Code Found.")
             else:
-                print "[TLV] %s : %s : %s" % (hex(tlv_type),
+                print("[TLV] %s : %s : %s" % (hex(tlv_type),
                                         len(tlv_value),
-                                        APDU.get_hex(tlv_value))
+                                        APDU.get_hex(tlv_value)))
 
         self._splash("X.509 %s Certificate (%s)" % (cert_name, APDU.get_hex(registered_id)))
 
@@ -1272,15 +1272,15 @@ class CAC(SmartCard):
             tlv_value = tv[1]
 
             if tlv_type == 0xBA:
-                print "Mapping of DG to ContainerID: %s" % APDU.get_hex(tlv_value)
+                print("Mapping of DG to ContainerID: %s" % APDU.get_hex(tlv_value))
             elif tlv_type == 0xBB:
-                print "Security Object: [length: %d]" % len(tlv_value)
+                print("Security Object: [length: %d]" % len(tlv_value))
             elif tlv_type == 0xFE:
-                print "Error Detction Code Found."
+                print("Error Detction Code Found.")
             else:
-                print "[TLV] %s : %s : %s" % (hex(tlv_type),
+                print("[TLV] %s : %s : %s" % (hex(tlv_type),
                                         len(tlv_value),
-                                        APDU.get_hex(tlv_value))
+                                        APDU.get_hex(tlv_value)))
 
 
         self._splash("Security Object (%s)" % (APDU.get_hex(object_id)))
@@ -1302,13 +1302,13 @@ class CAC(SmartCard):
             tlv_value = tv[1]
 
             if tlv_type == 0xBC:
-                print "Fingerprint: [length %d]" % len(tlv_value)
+                print("Fingerprint: [length %d]" % len(tlv_value))
             elif tlv_type == 0xFE:
-                print "Error Detection Code Found."
+                print("Error Detection Code Found.")
             else:
-                print "[TLV] %s : %s : %s" % (hex(tlv_type),
+                print("[TLV] %s : %s : %s" % (hex(tlv_type),
                                         len(tlv_value),
-                                        APDU.get_hex(tlv_value))
+                                        APDU.get_hex(tlv_value)))
         self._splash("Fingerprint")
 
 
@@ -1327,13 +1327,13 @@ class CAC(SmartCard):
             tlv_value = tv[1]
 
             if tlv_type == 0xBC:
-                print "Facial Image: [length %d]" % len(tlv_value)
+                print("Facial Image: [length %d]" % len(tlv_value))
             elif tlv_type == 0xFE:
-                print "Error Detection Code Found."
+                print("Error Detection Code Found.")
             else:
-                print "[TLV] %s : %s : %s" % (hex(tlv_type),
+                print("[TLV] %s : %s : %s" % (hex(tlv_type),
                                         len(tlv_value),
-                                        APDU.get_hex(tlv_value))
+                                        APDU.get_hex(tlv_value)))
 
         self._splash("Facial Information")
 
@@ -1353,41 +1353,41 @@ class CAC(SmartCard):
             tlv_value = tv[1]
 
             if tlv_type == 0x01:
-                print "First Name: %s" % APDU.get_str(tlv_value)
+                print("First Name: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x02:
-                print "Middle Name: %s" % APDU.get_str(tlv_value)
+                print("Middle Name: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x03:
-                print "Last Name: %s" % APDU.get_str(tlv_value)
+                print("Last Name: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x04:
-                print "Candency Name: %s" % APDU.get_str(tlv_value)
+                print("Candency Name: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x05:
-                print "Personal Identifier: %s" % APDU.get_str(tlv_value)
+                print("Personal Identifier: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x06:
-                print "DOB: %s" % APDU.get_str(tlv_value)
+                print("DOB: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x07:
-                print "Sex: %s" % APDU.get_str(tlv_value)
+                print("Sex: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x08:
-                print "PI Type Code: %s" % APDU.get_str(tlv_value)
+                print("PI Type Code: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x11:
-                print "Blood Type: %s" % APDU.get_str(tlv_value)
+                print("Blood Type: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x17:
-                print "DoD EDI PI: %s" % APDU.get_str(tlv_value)
+                print("DoD EDI PI: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x18:
-                print "Organ Donor: %s" % APDU.get_str(tlv_value)
+                print("Organ Donor: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x62:
-                print "Card Issue Date: %s" % APDU.get_str(tlv_value)
+                print("Card Issue Date: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x63:
-                print "Card Expiration Date: %s" % APDU.get_str(tlv_value)
+                print("Card Expiration Date: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x65:
-                print "Date Demographic Data Loaded: %s" % APDU.get_str(tlv_value)
+                print("Date Demographic Data Loaded: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x66:
-                print "Date Demographic Data Expires: %s" % APDU.get_str(tlv_value)
+                print("Date Demographic Data Expires: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x67:
-                print "Card Instance ID: %s" % APDU.get_str(tlv_value)
+                print("Card Instance ID: %s" % APDU.get_str(tlv_value))
             else:
-                print "[TLV] %s : %s : %s" % (hex(tlv_type),
+                print("[TLV] %s : %s : %s" % (hex(tlv_type),
                                         len(tlv_value),
-                                        APDU.get_hex(tlv_value))
+                                        APDU.get_hex(tlv_value)))
 
         self._splash("Person Instance Container")
 
@@ -1407,27 +1407,27 @@ class CAC(SmartCard):
             tlv_value = tv[1]
 
             if tlv_type == 0x19:
-                print "Contractor Function Code: %s" % APDU.get_str(tlv_value)
+                print("Contractor Function Code: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x20:
-                print "Gov Agency/Subagency Code: %s" % APDU.get_str(tlv_value)
+                print("Gov Agency/Subagency Code: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x24:
-                print "Branch: %s" % APDU.get_str(tlv_value)
+                print("Branch: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x25:
-                print "Pay Grade: %s" % APDU.get_str(tlv_value)
+                print("Pay Grade: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x26:
-                print "Rank Code: %s" % APDU.get_str(tlv_value)
+                print("Rank Code: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x34:
-                print "Personnel Category Code: %s" % APDU.get_str(tlv_value)
+                print("Personnel Category Code: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x35:
-                print "Non-US Gov Agency/Subagency Code: %s" % APDU.get_str(tlv_value)
+                print("Non-US Gov Agency/Subagency Code: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0x36:
-                print "Pay Plan Code: %s" % APDU.get_str(tlv_value)
+                print("Pay Plan Code: %s" % APDU.get_str(tlv_value))
             elif tlv_type == 0xD3:
-                print "Personnel Entitlement Condition Code: %s" % APDU.get_str(tlv_value)
+                print("Personnel Entitlement Condition Code: %s" % APDU.get_str(tlv_value))
             else:
-                print "[TLV] %s : %s : %s" % (hex(tlv_type),
+                print("[TLV] %s : %s : %s" % (hex(tlv_type),
                                         len(tlv_value),
-                                        APDU.get_hex(tlv_value))
+                                        APDU.get_hex(tlv_value)))
         self._splash("Personnel Information")
 
 
@@ -1509,7 +1509,7 @@ class CAC(SmartCard):
         data, sw1, sw2 = self._send_apdu(apdu_read)
 
         if sw1 != APDU.APDU_STATUS.SUCCESS:
-            print "ERROR (%s,%s): READ BUFFER failed." % (hex(sw1), hex(sw2))
+            print("ERROR (%s,%s): READ BUFFER failed." % (hex(sw1), hex(sw2)))
 
         return (data, sw1, sw2)
 
@@ -1539,7 +1539,7 @@ class CAC(SmartCard):
         # Get returned data
         data, sw1, sw2 = self._send_apdu(apdu_get_data)
         if sw1 != APDU.APDU_STATUS.SUCCESS:
-            print "ERROR (%s,%s): GET DATA failed." % (hex(sw1), hex(sw2))
+            print("ERROR (%s,%s): GET DATA failed." % (hex(sw1), hex(sw2)))
 
         return data, sw1, sw2
 
@@ -1576,7 +1576,7 @@ class CAC(SmartCard):
             # Get returned data
             data, sw1, sw2 = self._send_apdu(apdu_cmd)
             if sw1 != APDU.APDU_STATUS.SUCCESS:
-                print "ERROR (%s,%s): SIGN/DECRYPT failed." % (hex(sw1), hex(sw2))
+                print("ERROR (%s,%s): SIGN/DECRYPT failed." % (hex(sw1), hex(sw2)))
                 break
 
         return (data, sw1, sw2)
@@ -1586,9 +1586,9 @@ class CAC(SmartCard):
         """ SELECT NIST PIV """
         data, sw1, sw2 = self.apdu_select_application(APDU.APPLET.NIST_PIV)
         if sw1 != APDU.APDU_STATUS.SUCCESS:
-            print "ERROR (%s,%s): SELECT PIV RID (%s) failed." % (hex(sw1),
+            print("ERROR (%s,%s): SELECT PIV RID (%s) failed." % (hex(sw1),
                                                                   hex(sw2),
-                                                                  APDU.get_hex(APDU.APPLET.NIST_PIV))
+                                                                  APDU.get_hex(APDU.APPLET.NIST_PIV)))
             return
 
 
@@ -1677,8 +1677,8 @@ class CAC(SmartCard):
 
         cert_f.close()
 
-        print "Saved %s to %s" % (self._lookup_cert(registered_id, object_id),
-                                cert_filename)
+        print("Saved %s to %s" % (self._lookup_cert(registered_id, object_id),
+                                cert_filename))
 
 
     def save_nist_cert(self, oid, cert_filename):
@@ -1778,7 +1778,7 @@ class CAC(SmartCard):
             logger.error("No function implemented to print Object (%s) from Applet (%s)." % (APDU.get_hex(object_id),
                                                                                APDU.get_hex(registered_id))
                           )
-            print tv_data
+            print(tv_data)
             return
 
 
@@ -1828,7 +1828,7 @@ class CreditCard(SmartCard):
         """
         data, sw1, sw2 = self.apdu_select_application(APDU.APPLET.VISA)
         if sw1 != APDU.APDU_STATUS.SUCCESS:
-            print "ERROR: This does not appear to be a valid VISA card!"
+            print("ERROR: This does not appear to be a valid VISA card!")
         else:
             self._parse_applet_info(data)
         
@@ -1839,7 +1839,7 @@ class CreditCard(SmartCard):
         """
         data, sw1, sw2 = self.apdu_select_application(APDU.APPLET.MASTERCARD)
         if sw1 != APDU.APDU_STATUS.SUCCESS:
-            print "ERROR: This does not appear to be a valid MasterCard!"
+            print("ERROR: This does not appear to be a valid MasterCard!")
         else:
             self._parse_applet_info(data)
 

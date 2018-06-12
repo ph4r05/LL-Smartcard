@@ -48,10 +48,10 @@ def process_card(connection, options):
     
     # Select
     if options.card_type == "V": 
-        print "* Reading VISA card..."
+        print("* Reading VISA card...")
         card.select_visa_applet()
     elif options.card_type == "M":
-        print "* Reading MasterCard..."
+        print("* Reading MasterCard...")
         card.select_mastercard_applet()
     else:
         logger.error("Unrecognized card type.")
@@ -61,14 +61,14 @@ def process_card(connection, options):
     cc_info = card.read_card_info()
     
     if cc_info is not None:
-            print "Bank card info: "
-            print " * Name: %s %s"%(cc_info['first_name'],cc_info['last_name'])
-            print " * Account #: %s"%(cc_info['account_number'])
-            print " * Expiration: %s/%s"%(cc_info['exp_month'], cc_info['exp_year'])
-            print " * Service: %s"%(service_first[cc_info['service_first']])
-            print "            %s"%(service_second[cc_info['service_second']])
-            print "            %s"%(service_third[cc_info['service_third']])
-    
+            print("Bank card info: ")
+            print(" * Name: %s %s" % (cc_info['first_name'], cc_info['last_name']))
+            print(" * Account #: %s" % (cc_info['account_number']))
+            print(" * Expiration: %s/%s" % (cc_info['exp_month'], cc_info['exp_year']))
+            print(" * Service: %s" % (service_first[cc_info['service_first']]))
+            print("            %s" % (service_second[cc_info['service_second']]))
+            print("            %s" % (service_third[cc_info['service_third']]))
+
 
 if __name__ == "__main__":
 
